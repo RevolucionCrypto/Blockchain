@@ -1,0 +1,30 @@
+from hashlib import sha256
+MAX_NONCE = 100000000000
+
+def SHA256(texto):
+    return sha256(texto.encode("ascii")).hexdigest()
+
+def mine(numero_bloque, transacciones, hash_previo, prefijo_ceros):
+    prefijo_string = '0'*prefijo_ceros
+    for nonce in range(MAX_NONCE):
+        texto = str(numero_bloque) + transacciones + hash_previo + str(nonce)
+        nuevo_hash = SHA256(texto)
+        if nuevo_hash.startswith(prefijo_string):
+            print(f"Felicidades! Bloque de Bitcoin minado con éxito con el número:{nonce}")
+            return nuevo_hash
+
+    raise BaseException(f"No encontrado tras probar con {MAX_NONCE} veces")
+
+if __name__=='__main__':
+    transacciones='''
+    Yasin->ismail->15,
+    mikhail->Aron->25
+    '''
+    dificultad=4 # aumentando este valor, el algoritmo tardará más en encontrar el hash
+    import time
+    tiempo_Inicial = time.time()
+    print("Iniciando mineria")
+    nuevo_hash = mine(5,transacciones,'0000000xa036944e29568d0cff17edbe038f81208fecf9a66be9a2b8321c6ec7', dificultad)
+    tiempo_total = str((time.time() - tiempo_Inicial))
+    print(f"fin de mineria. La mineria ha tardado: {tiempo_total} segundos")
+    print(nuevo_hash)
